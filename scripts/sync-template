@@ -9,9 +9,13 @@ function usage() {
   cat << EOF >&2
 Usage:
 
-    ${script_name} [-h] [-t PROJECT_TYPE]
+    ${script_name} [-h] [-f FLAKE_REFERENCE] [-t PROJECT_TYPE]
 
   Updates the current project with the latest from the upstream template.
+
+  FLAKE_REFERENCE is a reference to a flake that contains a template whose name
+                  matches the PROJECT_TYPE. The default value is probably what
+                  you want.
 
   PROJECT_TYPE is the name of the template to sync. If it’s not provided, we try
                to read it from the ‘type.name’ field in the mustache YAML file
@@ -24,13 +28,16 @@ Usage:
   - this doesn’t remove files that have been removed from the template since
     the last update and
   - this applies mustache if the expected .config/mustache.yaml exists in the
-    repository, but that doesn’t yet support renaming files, so some may need to
-    be manually renamed after they’re created.
+    repository, it will also replace the ‘{{project.name}}’ template in file
+    names.
 EOF
 }
 
-while getopts "ht:" option; do
+while getopts "f:ht:" option; do
   case "${option}" in
+    f)
+      flake_reference="${OPTARG}"
+      ;;
     h)
       usage
       exit 0
@@ -53,9 +60,13 @@ fi
 project_dir="${PWD}"
 mustache_file="${project_dir}/.config/mustache.yaml"
 
+if [[ ! -v flake_reference ]]; then
+  flake_reference="github:sellout/flaky-environments"
+fi
+
 if [[ ! -v project_type ]]; then
   if [[ -f ${mustache_file} ]]; then
-    project_type="$(yq '.type.name' "${mustache_file}")"
+    project_type="$(yq --raw-output '.type.name' "${mustache_file}")"
   else
     echo "Unable to find project type." >&2
     usage
@@ -63,11 +74,21 @@ if [[ ! -v project_type ]]; then
   fi
 fi
 
+if [[ -f ${mustache_file} ]]; then
+  project_name="$(yq --raw-output '.project.name' "${mustache_file}")"
+else
+  echo "Unable to find project name." >&2
+  usage
+  exit 1
+fi
+
 temp_dir="$(mktemp --directory --tmpdir "${project_type}-template.XXXX")"
 
 (
   cd "${temp_dir}" \
-    && nix flake init --template "github:sellout/flaky-environments#${project_type}"
+    && nix flake init --template "${flake_reference}#${project_type}" \
+    && find . -iname "*{{project.name}}*" -depth \
+      -execdir rename "s/{{project.name}}/${project_name}/g" {} +
 )
 
 if [[ -f ${mustache_file} ]]; then

@@ -1,4 +1,5 @@
 {
+  bash-strict-mode,
   bats,
   checkedDrv,
   lib,
@@ -55,6 +56,7 @@ checkedDrv (stdenv.mkDerivation {
       set +u
       wrapProgram $out/bin/sync-template \
         --prefix PATH : ${lib.makeBinPath [
+      bash-strict-mode
       moreutils
       mustache-go
       yq
