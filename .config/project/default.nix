@@ -13,10 +13,9 @@
 
     checks = builtins.listToAttrs (map (name: {
         name = "${name}-template-validity";
-        value = flaky.lib.checks.validate-template name pkgs;
+        value = flaky.lib.checks.validate-template name self pkgs;
       })
-      ## TODO: Haskell template check fails for some reason.
-      (lib.remove "haskell" (builtins.attrNames self.templates)));
+      (builtins.attrNames self.templates));
   };
 
   ## dependency management

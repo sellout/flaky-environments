@@ -89,24 +89,6 @@ We disagree with this because packages shouldn’t be _publishing_ with `-Werror
 
 Yes, in development, `-Werror` is often (and should be) used. However, that just helps developers be aware of deprecations more immediately. They can always add `-Wwarn=deprecation` in some scope if they need to avoid updating it for the time being.
 
--------
-
-In the absolute, almost every change is a breaking change. This section describes how we mitigate that to provide minor updates and revisions.
-
-Here are some common changes that can have unintended effects:
-
-- adding instances can conflict with downstream orphans,
-- adding a module can conflict with a module from another package,
-- adding a definition to an existing module can conflict if there are unqualified imports, and
-- even small bugfixes can introduce breaking changes where downstream depended on the broken results.
-
-To mitigate some of those issues for versioning, we assume the following usage:
-
-- modules should be imported using `PackageImports`, so that adding modules is a _minor_ change;
-- modules should be imported qualified, so that adding definitions is a _minor_ change;
-- adding instances can't be mitigated in the same way, and it's not uncommon for downstream libraries to add orphans instances when they're omitted from upstream libraries. However, since these conflicts can only happen via direct dependencies, and represent an explicit downstream workaround, it’s reasonable to expect a quick downstream update to remove or conditionalize the workaround. So, this is considered a _minor major_ change;
-- deprecation is considered a _revision_ change, however it will often be paired with _minor_ changes. `-Werror` can cause this to fail, but published libraries shouldn't be compiled with `-Werror`.
-
 ## licensing
 
 This package is licensed under [The GNU AGPL 3.0 or later](./LICENSE). If you need a license for usage that isn’t covered under the AGPL, please contact [Greg Pfeil](mailto:greg@technomadic.org?subject=licensing%20{{project.name}}).

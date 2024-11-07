@@ -1,6 +1,7 @@
 {
   project:
     {
+      creation-date: "2015-10-21",
       description: "An example template instantiation.",
       name: "template-example",
       repo: "sellout/system-configurations",
