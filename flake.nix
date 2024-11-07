@@ -1,5 +1,5 @@
 {
-  description = "Templates for dev environments";
+  description = "Templates & shells for dev environments";
 
   nixConfig = {
     ## https://github.com/NixOS/rfcs/blob/master/rfcs/0045-deprecate-url-syntax.md
@@ -16,10 +16,8 @@
   outputs = {
     bash-strict-mode,
     flake-utils,
-    garnix-systems,
-    home-manager,
+    flaky,
     nixpkgs,
-    nixpkgs-unstable,
     project-manager,
     self,
     systems,
@@ -31,47 +29,20 @@
     {
       ## These are also consumed by downstream projects, so it may include more
       ## than is referenced in this flake.
-      schemas = project-manager.schemas;
+      schemas = flaky.schemas;
 
       overlays = {
         default = final: prev: {
           flaky-management-scripts =
             self.packages.${final.system}.management-scripts;
         };
-
-        elisp-dependencies = import ./nix/elisp-dependencies.nix;
-
-        dependencies = final: prev: {
-          haskellPackages =
-            prev.haskellPackages.extend
-            (self.overlays.haskellDependencies final prev);
-
-          ## NB: The `treefmt2` in Nixpkgs 24.05 fails when multiple formatters
-          ##     apply to the same file (which is a problem when we have both a
-          ##     formatter and linter(s)).
-          treefmt2 = nixpkgs-unstable.legacyPackages.${final.system}.treefmt2;
-        };
-
-        haskellDependencies = import ./nix/haskell-dependencies.nix;
-      };
-
-      lib = import ./nix/lib.nix {
-        inherit
-          bash-strict-mode
-          flake-utils
-          garnix-systems
-          home-manager
-          nixpkgs
-          project-manager
-          self
-          supportedSystems
-          ;
       };
 
       templates = let
         welcomeText = ''
-          See https://github.com/sellout/flaky/tree/main/README.md#templates for
-          how to complete the setup of this project.
+          See
+          https://github.com/sellout/flaky-environments/tree/main/README.md#templates
+          for how to complete the setup of this project.
         '';
       in {
         default = {
@@ -117,22 +88,10 @@
         };
       };
 
-      projectModules = {
-        ## The settings shared across my projects.
-        default = ./base/.config/project;
-        bash = ./base/.config/project/bash;
-        c = ./base/.config/project/c;
-        dhall = ./base/.config/project/dhall;
-        emacs-lisp = ./base/.config/project/emacs-lisp;
-        hacktoberfest = ./base/.config/project/hacktoberfest.nix;
-        haskell = ./base/.config/project/haskell;
-        nix = ./base/.config/project/nix;
-      };
-
       homeConfigurations =
         builtins.listToAttrs
         (builtins.map
-          (self.lib.homeConfigurations.example self
+          (flaky.lib.homeConfigurations.example self
             [({pkgs, ...}: {home.packages = [pkgs.flaky-management-scripts];})])
           supportedSystems);
     }
@@ -140,8 +99,9 @@
     (system: let
       pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
         bash-strict-mode.overlays.default
+        flaky.overlays.default
+        flaky.overlays.dependencies
         project-manager.overlays.default
-        self.overlays.dependencies
       ];
     in {
       ## These shells are quick-and-dirty development environments for various
@@ -170,7 +130,7 @@
       in
         self.projectConfigurations.${system}.devShells
         // {
-          default = self.lib.devShells.default system self [] "";
+          default = flaky.lib.devShells.default system self [] "";
 
           ## This provides tooling that could be useful in _any_ Nix project, if
           ## there’s not a specific one.
@@ -303,12 +263,9 @@
           # doInstallCheck = true;
         });
 
-      projectConfigurations = self.lib.projectConfigurations.default {
+      projectConfigurations = flaky.lib.projectConfigurations.nix {
         inherit pkgs self;
-        modules = [
-          self.projectModules.bash
-          self.projectModules.nix
-        ];
+        modules = [flaky.projectModules.bash];
       };
 
       checks = self.projectConfigurations.${system}.checks;
@@ -316,34 +273,13 @@
     });
 
   inputs = {
-    bash-strict-mode = {
-      inputs.flaky.follows = "";
-      url = "github:sellout/bash-strict-mode";
-    };
+    ## Flaky should generally be the source of truth for its inputs.
+    flaky.url = "github:sellout/flaky";
 
-    flake-utils = {
-      inputs.systems.follows = "systems";
-      url = "github:numtide/flake-utils";
-    };
-
-    garnix-systems.url = "github:garnix-io/nix-systems";
-
-    home-manager = {
-      inputs.nixpkgs.follows = "nixpkgs";
-      url = "github:nix-community/home-manager/release-24.05";
-    };
-
-    nixpkgs.url = "github:NixOS/nixpkgs/release-24.05";
-
-    nixpkgs-unstable.follows = "project-manager/nixpkgs-unstable";
-
-    project-manager = {
-      inputs.flaky.follows = "";
-      url = "github:sellout/project-manager";
-    };
-
-    ## See https://github.com/nix-systems/nix-systems#readme for an explanation
-    ## of this input.
-    systems.url = "github:sellout/nix-systems";
+    bash-strict-mode.follows = "flaky/bash-strict-mode";
+    flake-utils.follows = "flaky/flake-utils";
+    nixpkgs.follows = "flaky/nixpkgs";
+    project-manager.follows = "flaky/project-manager";
+    systems.follows = "flaky/systems";
   };
 }

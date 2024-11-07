@@ -3,12 +3,16 @@
     "bash-strict-mode": {
       "inputs": {
         "flake-utils": [
+          "flaky",
           "bash-strict-mode",
           "flaky",
           "flake-utils"
         ],
-        "flaky": [],
+        "flaky": [
+          "flaky"
+        ],
         "nixpkgs": [
+          "flaky",
           "bash-strict-mode",
           "flaky",
           "nixpkgs"
@@ -48,6 +52,7 @@
     "flake-utils": {
       "inputs": {
         "systems": [
+          "flaky",
           "systems"
         ]
       },
@@ -62,6 +67,35 @@
       "original": {
         "owner": "numtide",
         "repo": "flake-utils",
+        "type": "github"
+      }
+    },
+    "flaky": {
+      "inputs": {
+        "bash-strict-mode": "bash-strict-mode",
+        "flake-utils": "flake-utils",
+        "garnix-systems": "garnix-systems",
+        "home-manager": "home-manager",
+        "nixpkgs": "nixpkgs",
+        "nixpkgs-unstable": [
+          "flaky",
+          "project-manager",
+          "nixpkgs-unstable"
+        ],
+        "project-manager": "project-manager",
+        "systems": "systems"
+      },
+      "locked": {
+        "lastModified": 1730310927,
+        "narHash": "sha256-vZQu/jN6rCTp/sqPR2h8qjegwjtSRWHylzCQYqnPAAo=",
+        "owner": "sellout",
+        "repo": "flaky",
+        "rev": "2453d899d199ed11a961036413ae83891a142b79",
+        "type": "github"
+      },
+      "original": {
+        "owner": "sellout",
+        "repo": "flaky",
         "type": "github"
       }
     },
@@ -83,6 +117,7 @@
     "home-manager": {
       "inputs": {
         "nixpkgs": [
+          "flaky",
           "nixpkgs"
         ]
       },
@@ -184,18 +219,23 @@
     "project-manager": {
       "inputs": {
         "bash-strict-mode": [
+          "flaky",
           "project-manager",
           "flaky",
           "bash-strict-mode"
         ],
         "flake-schemas": "flake-schemas",
         "flake-utils": [
+          "flaky",
           "project-manager",
           "flaky",
           "flake-utils"
         ],
-        "flaky": [],
+        "flaky": [
+          "flaky"
+        ],
         "nixpkgs": [
+          "flaky",
           "project-manager",
           "flaky",
           "nixpkgs"
@@ -205,6 +245,7 @@
         "nixpkgs-23_11": "nixpkgs-23_11",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "systems": [
+          "flaky",
           "project-manager",
           "flaky",
           "systems"
@@ -227,17 +268,27 @@
     },
     "root": {
       "inputs": {
-        "bash-strict-mode": "bash-strict-mode",
-        "flake-utils": "flake-utils",
-        "garnix-systems": "garnix-systems",
-        "home-manager": "home-manager",
-        "nixpkgs": "nixpkgs",
-        "nixpkgs-unstable": [
-          "project-manager",
-          "nixpkgs-unstable"
+        "bash-strict-mode": [
+          "flaky",
+          "bash-strict-mode"
         ],
-        "project-manager": "project-manager",
-        "systems": "systems"
+        "flake-utils": [
+          "flaky",
+          "flake-utils"
+        ],
+        "flaky": "flaky",
+        "nixpkgs": [
+          "flaky",
+          "nixpkgs"
+        ],
+        "project-manager": [
+          "flaky",
+          "project-manager"
+        ],
+        "systems": [
+          "flaky",
+          "systems"
+        ]
       }
     },
     "shellcheck-nix-attributes": {
@@ -274,6 +325,7 @@
     "treefmt-nix": {
       "inputs": {
         "nixpkgs": [
+          "flaky",
           "project-manager",
           "nixpkgs"
         ]

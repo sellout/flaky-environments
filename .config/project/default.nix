@@ -3,19 +3,20 @@
   flaky,
   lib,
   pkgs,
+  self,
   supportedSystems,
   ...
 }: {
   project = {
-    name = "flaky";
-    summary = "Templates for dev environments";
+    name = "flaky-environments";
+    summary = "Templates & shells for dev environments";
 
     checks = builtins.listToAttrs (map (name: {
         name = "${name}-template-validity";
         value = flaky.lib.checks.validate-template name pkgs;
       })
       ## TODO: Haskell template check fails for some reason.
-      (lib.remove "haskell" (builtins.attrNames flaky.templates)));
+      (lib.remove "haskell" (builtins.attrNames self.templates)));
   };
 
   ## dependency management

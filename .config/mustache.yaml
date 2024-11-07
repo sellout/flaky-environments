@@ -2,9 +2,9 @@
   "project":
     {
       "description": "Making it simpler to manage poly-repo projects (and projectiverses).",
-      "name": "flaky",
-      "repo": "sellout/flaky",
-      "summary": "Templates for dev environments",
+      "name": "flaky-environments",
+      "repo": "sellout/flaky-environments",
+      "summary": "Templates & shells for dev environments",
     },
   "type": { "name": "nix" },
 }

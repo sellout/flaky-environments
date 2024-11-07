@@ -23,5 +23,5 @@ jobs:
       - uses: "DeterminateSystems/flakehub-push@main"
         with:
           visibility: "public"
-          name: "sellout/flaky"
+          name: "sellout/flaky-environments"
           tag: "${{ inputs.tag }}"
