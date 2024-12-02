@@ -14,7 +14,6 @@
   };
 
   outputs = {
-    bash-strict-mode,
     flake-utils,
     flaky,
     nixpkgs,
@@ -53,7 +52,9 @@
           supportedSystems);
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
+        flaky.overlays.default
+      ];
 
       src = pkgs.lib.cleanSource ./.;
     in {
@@ -62,36 +63,34 @@
       packages = {
         default = self.packages.${system}.${pname};
 
-        "${pname}" =
-          bash-strict-mode.lib.checkedDrv pkgs
-          (pkgs.stdenv.mkDerivation {
-            inherit pname src;
+        "${pname}" = pkgs.checkedDrv (pkgs.stdenv.mkDerivation {
+          inherit pname src;
 
-            version = "0.1.0";
+          version = "0.1.0";
 
-            meta = {
-              description = "{{project.summary}}";
-              longDescription = ''
-                {{project.description}}
-              '';
-            };
-
-            nativeBuildInputs = [pkgs.bats];
-
-            patchPhase = ''
-              runHook prePatch
-              patchShebangs .
-              runHook postPatch
+          meta = {
+            description = "{{project.summary}}";
+            longDescription = ''
+              {{project.description}}
             '';
+          };
 
-            doCheck = true;
+          nativeBuildInputs = [pkgs.bats];
 
-            checkPhase = ''
-              bats --print-output-on-failure ./test/all-tests.bats
-            '';
+          patchPhase = ''
+            runHook prePatch
+            patchShebangs .
+            runHook postPatch
+          '';
 
-            doInstallCheck = true;
-          });
+          doCheck = true;
+
+          checkPhase = ''
+            bats --print-output-on-failure ./test/all-tests.bats
+          '';
+
+          doInstallCheck = true;
+        });
       };
 
       projectConfigurations =
@@ -108,7 +107,6 @@
     ## Flaky should generally be the source of truth for its inputs.
     flaky.url = "github:sellout/flaky";
 
-    bash-strict-mode.follows = "flaky/bash-strict-mode";
     flake-utils.follows = "flaky/flake-utils";
     nixpkgs.follows = "flaky/nixpkgs";
     systems.follows = "flaky/systems";

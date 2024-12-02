@@ -67,7 +67,7 @@ temp_dir="$(mktemp --directory --tmpdir "${project_type}-template.XXXX")"
 
 (
   cd "${temp_dir}" \
-    && nix flake init --template "github:sellout/flaky#${project_type}"
+    && nix flake init --template "github:sellout/flaky-environments#${project_type}"
 )
 
 if [[ -f ${mustache_file} ]]; then

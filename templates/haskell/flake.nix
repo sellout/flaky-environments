@@ -176,7 +176,7 @@
     // flake-utils.lib.eachSystem supportedSystems
     (system: let
       pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
-        flaky.overlays.dependencies
+        flaky.overlays.default
         ## NB: This uses `self.overlays.default` because packages need to be
         ##     able to find other packages in this flake as dependencies.
         self.overlays.default
@@ -197,6 +197,7 @@
           default =
             self.devShells.${system}.${self.lib.nixifyGhcVersion self.lib.defaultGhcVersion};
         }
+        // self.projectConfigurations.${system}.devShells
         // flaky-haskell.lib.mkDevShells
         pkgs
         (map self.lib.nixifyGhcVersion (self.lib.supportedGhcVersions system))

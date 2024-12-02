@@ -20,7 +20,6 @@
   };
 
   outputs = {
-    bash-strict-mode,
     flake-utils,
     flaky,
     nixpkgs,
@@ -69,22 +68,21 @@
           supportedSystems);
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
+        flaky.overlays.default
+      ];
 
       src = pkgs.lib.cleanSource ./.;
     in {
       packages = {
         default = self.packages.${system}.${pname};
 
-        "${pname}" =
-          bash-strict-mode.lib.checkedDrv
-          pkgs
-          (pkgs.dhallPackages.buildDhallDirectoryPackage {
-            src = "${src}/dhall";
-            name = pname;
-            dependencies = [pkgs.dhallPackages.Prelude];
-            document = true;
-          });
+        "${pname}" = pkgs.checkedDrv (pkgs.dhallPackages.buildDhallDirectoryPackage {
+          src = "${src}/dhall";
+          name = pname;
+          dependencies = [pkgs.dhallPackages.Prelude];
+          document = true;
+        });
       };
 
       projectConfigurations =
@@ -101,7 +99,6 @@
     ## Flaky should generally be the source of truth for its inputs.
     flaky.url = "github:sellout/flaky";
 
-    bash-strict-mode.follows = "flaky/bash-strict-mode";
     flake-utils.follows = "flaky/flake-utils";
     nixpkgs.follows = "flaky/nixpkgs";
     systems.follows = "flaky/systems";

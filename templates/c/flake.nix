@@ -14,7 +14,6 @@
   };
 
   outputs = {
-    bash-strict-mode,
     flake-utils,
     flaky,
     nixpkgs,
@@ -51,7 +50,9 @@
       lib = {};
     }
     // flake-utils.lib.eachSystem supportedSystems (system: let
-      pkgs = nixpkgs.legacyPackages.${system};
+      pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
+        flaky.overlays.default
+      ];
 
       src = pkgs.lib.cleanSource ./.;
 
@@ -62,17 +63,19 @@
       packages = {
         default = self.packages.${system}.${pname};
 
-        "${pname}" =
-          bash-strict-mode.lib.checkedDrv pkgs
-          (stdenv.mkDerivation {
-            inherit pname src;
+        ## NB: Can’t use `pkgs.checkedDrv, because `set -o nounset` causes
+        ##    `libtoolize` to fail with “line 2775: debug_mode: unbound
+        ##     variable”. And you can’t run `set` to disable it locally in
+        ##     pre/post hooks (because they’re run in a subshell).
+        "${pname}" = pkgs.shellchecked (stdenv.mkDerivation {
+          inherit pname src;
 
-            buildInputs = [
-              pkgs.autoreconfHook
-            ];
+          buildInputs = [
+            pkgs.autoreconfHook
+          ];
 
-            version = "0.1.0";
-          });
+          version = "0.1.0";
+        });
       };
 
       projectConfigurations =
@@ -87,10 +90,9 @@
         // {
           ## TODO: This doesn’t quite work yet.
           c-lint =
-            flaky.lib.checks.simple
-            pkgs
-            src
+            pkgs.checks.simple
             "clang-tidy"
+            src
             [pkgs.llvmPackages_16.clang]
             ''
               ## TODO: Can we keep the compile-commands.json from the original
@@ -110,7 +112,6 @@
     ## Flaky should generally be the source of truth for its inputs.
     flaky.url = "github:sellout/flaky";
 
-    bash-strict-mode.follows = "flaky/bash-strict-mode";
     flake-utils.follows = "flaky/flake-utils";
     nixpkgs.follows = "flaky/nixpkgs";
     systems.follows = "flaky/systems";

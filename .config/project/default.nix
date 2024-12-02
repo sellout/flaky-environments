@@ -13,7 +13,7 @@
 
     checks = builtins.listToAttrs (map (name: {
         name = "${name}-template-validity";
-        value = flaky.lib.checks.validate-template name self pkgs;
+        value = pkgs.checks.validate-template name self;
       })
       (builtins.attrNames self.templates));
   };
@@ -46,7 +46,10 @@
       ##     doesn’t exist in worktrees).
       projectRootFile = lib.mkForce "scripts/sync-template";
       settings = {
-        formatter.shfmt.includes = ["scripts/*"];
+        formatter.shfmt = {
+          # command = lib.getExe pkgs.shfmt;
+          includes = ["scripts/*"];
+        };
         ## Each template has its own formatter that is run during checks, so
         ## we don’t check them here. The `*/*` is needed so that we don’t miss
         ## formatting anything in the templates directory that is not part of
