@@ -93,14 +93,17 @@
         "systems": "systems"
       },
       "locked": {
-        "lastModified": 1733128574,
-        "narHash": "sha256-+zdpuWKMTZ/TSrwkz5Y18uebA5lthtJxmGAF0HgJfM0=",
-        "path": "/Users/greg/Projects/personal/flaky/main",
-        "type": "path"
+        "lastModified": 1731043955,
+        "narHash": "sha256-2T1YPXVfJQ0ZAsIirC5oqLxrGZfNztPZOUHrwADEZO4=",
+        "owner": "sellout",
+        "repo": "flaky",
+        "rev": "aa3a4afca3ed7a588b96b4b45dc31e2c78fbe48c",
+        "type": "github"
       },
       "original": {
-        "path": "/Users/greg/Projects/personal/flaky/main",
-        "type": "path"
+        "owner": "sellout",
+        "repo": "flaky",
+        "type": "github"
       }
     },
     "garnix-systems": {

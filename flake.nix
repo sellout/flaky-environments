@@ -76,7 +76,7 @@
 
   inputs = {
     ## Flaky should generally be the source of truth for its inputs.
-    flaky.url = "path:/Users/greg/Projects/personal/flaky/main";
+    flaky.url = "github:sellout/flaky";
 
     flake-utils.follows = "flaky/flake-utils";
     nixpkgs.follows = "flaky/nixpkgs";
