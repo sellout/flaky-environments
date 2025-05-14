@@ -30,13 +30,16 @@
   ## This provides tooling that could be useful in _any_ Nix project, if
   ## there’s not a specific one.
   nix = pkgs.checkedDrv (pkgs.mkShell {
-    nativeBuildInputs = [
-      pkgs.bash-strict-mode
-      pkgs.nil
-      pkgs.nodePackages.bash-language-server
-      pkgs.shellcheck
-      pkgs.shfmt
-    ];
+    nativeBuildInputs =
+      [
+        pkgs.bash-strict-mode
+        pkgs.nil
+        pkgs.shellcheck
+        pkgs.shfmt
+      ]
+      ## NB: bash-language-server fails on i686-linux with Nixpkgs 24.11.
+      ++ lib.optional (pkgs.system != "i686-linux")
+      pkgs.nodePackages.bash-language-server;
   });
 in
   {
@@ -45,7 +48,6 @@ in
     bash = extendDevShell nix [
       pkgs.bash
       pkgs.bash-strict-mode
-      pkgs.nodePackages.bash-language-server
       pkgs.shellcheck
       pkgs.shfmt
     ];
