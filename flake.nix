@@ -32,10 +32,13 @@
       schemas = flaky.schemas;
 
       overlays = {
-        default =
-          nixpkgs.lib.composeExtensions
+        default = nixpkgs.lib.composeManyExtensions [
           flaky.overlays.default
-          self.overlays.local;
+          self.overlays.dependencies
+          self.overlays.local
+        ];
+
+        dependencies = import ./nix/dependencies.nix;
 
         local = final: prev: let
           localPkgs = localPackages final;
@@ -62,6 +65,7 @@
     (system: let
       pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
         flaky.overlays.default
+        self.overlays.dependencies
       ];
     in {
       devShells =
