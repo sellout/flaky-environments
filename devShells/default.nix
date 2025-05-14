@@ -88,6 +88,7 @@ in
           pkgs.rustPackages.clippy
           pkgs.rustc
           pkgs.rustfmt
+          pkgs.rustup
         ]);
   }
   // (
