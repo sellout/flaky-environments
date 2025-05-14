@@ -31,7 +31,21 @@
       ## than is referenced in this flake.
       schemas = flaky.schemas;
 
-      overlays.default = final: prev: localPackages final;
+      overlays = {
+        default = nixpkgs.lib.composeManyExtensions [
+          flaky.overlays.default
+          self.overlays.dependencies
+          self.overlays.local
+        ];
+
+        dependencies = import ./nix/dependencies.nix;
+
+        local = final: prev: let
+          localPkgs = localPackages final;
+        in {
+          flaky-management-scripts = localPkgs.management-scripts;
+        };
+      };
 
       templates = import ./templates;
 
@@ -39,13 +53,19 @@
         builtins.listToAttrs
         (builtins.map
           (flaky.lib.homeConfigurations.example self
-            [({pkgs, ...}: {home.packages = [pkgs.flaky-management-scripts];})])
+            [
+              ({pkgs, ...}: {
+                home.packages = [pkgs.flaky-management-scripts];
+                nixpkgs.overlays = [self.overlays.default];
+              })
+            ])
           supportedSystems);
     }
     // flake-utils.lib.eachSystem supportedSystems
     (system: let
       pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
         flaky.overlays.default
+        self.overlays.dependencies
       ];
     in {
       devShells =
