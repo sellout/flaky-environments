@@ -88,6 +88,10 @@ in
           pkgs.rustPackages.clippy
           pkgs.rustc
           pkgs.rustfmt
+          (pkgs.rustup.overrideAttrs (old: {
+            ## NB: Fails on i686-linux with Nixpkgs 24.11.
+            doCheck = pkgs.system != "i686-linux";
+          }))
         ]);
   }
   // (
