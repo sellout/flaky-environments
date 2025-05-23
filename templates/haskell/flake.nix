@@ -111,7 +111,7 @@
           "ghc" + nixpkgs.lib.replaceStrings ["."] [""] version;
 
         ## TODO: Extract this automatically from `pkgs.haskellPackages`.
-        defaultGhcVersion = "9.6.5";
+        defaultGhcVersion = "9.8.4";
 
         ## Test the oldest revision possible for each minor release. If it’s not
         ## available in nixpkgs, test the oldest available, then try an older
@@ -122,11 +122,12 @@
           self.lib.defaultGhcVersion
           "8.10.7"
           "9.0.2"
-          "9.2.5"
-          "9.4.5"
+          "9.2.8"
+          "9.4.7"
           "9.6.3"
           "9.8.1"
           "9.10.1"
+          "9.12.1"
           # "ghcHEAD" # doctest doesn’t work on current HEAD
         ];
 
@@ -154,15 +155,12 @@
         supportedGhcVersions = system:
           self.lib.testedGhcVersions system
           ++ [
-            "9.2.6"
-            "9.2.7"
-            "9.2.8"
-            "9.4.6"
-            "9.4.7"
             "9.4.8"
             "9.6.4"
             "9.6.5"
             "9.8.2"
+            "9.10.2"
+            "9.12.2"
           ];
 
         githubSystems = [
@@ -204,20 +202,9 @@
         cabalPackages
         (hpkgs:
           [self.projectConfigurations.${system}.packages.path]
-          ## NB: Haskell Language Server no longer supports GHC <9.2, and 9.4
-          ##     has an issue with it on i686-linux.
-          ## TODO: Remove the restriction on GHC 9.10 once
-          ##       https://github.com/NixOS/nixpkgs/commit/e87381d634cb1ddd2bd7e121c44fbc926a8c026a
-          ##       finds its way into 24.05.
+          ## NB: Haskell Language Server no longer supports GHC <9.4.
           ++ nixpkgs.lib.optional
-          (
-            (
-              if system == "i686-linux"
-              then nixpkgs.lib.versionAtLeast hpkgs.ghc.version "9.4"
-              else nixpkgs.lib.versionAtLeast hpkgs.ghc.version "9.2"
-            )
-            && nixpkgs.lib.versionOlder hpkgs.ghc.version "9.10"
-          )
+          (nixpkgs.lib.versionAtLeast hpkgs.ghc.version "9.4")
           hpkgs.haskell-language-server);
 
       projectConfigurations =

@@ -70,11 +70,12 @@ in
         pkgs.ghc
         pkgs.hpack
         pkgs.ormolu
-        pkgs.stack
       ]
       ++ lib.optionals (pkgs.system != sys.i686-linux) [
         ## TODO: `enummapset-0.7.1.0` fails to build on i686-linux.
         pkgs.haskell-language-server
+        ## TODO: dependencies are missing on i686-linux
+        pkgs.stack
       ]);
     rust =
       extendDevShell nix
