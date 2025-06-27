@@ -26,7 +26,7 @@ If you have created projects with a template, the template may have changed sinc
 Simply run
 
 ```bash
-nix run flaky#sync-template -- <name of template>
+nix run flaky#sync-template
 ```
 
 to have the latest template files updated in your repository. This will automatically apply `mustache` if you have a .config/mustache.yaml file in your repository. Also, since it overwrites files in ways you may not like, it’s best to do this in a clean work tree. After running it, the changes can be manually evaluated.
