@@ -85,6 +85,7 @@ in
         ++ [
           pkgs.cargo
           pkgs.cargo-fuzz
+          pkgs.cargo-semver-checks
           pkgs.rust-analyzer
           pkgs.rustPackages.clippy
           pkgs.rustc
