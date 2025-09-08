@@ -56,7 +56,7 @@
     inherit (self.lib) defaultGhcVersion;
     systems = self.lib.githubSystems;
     ghcVersions = self.lib.nonNixTestedGhcVersions;
-    cabalPackages = {"${config.project.name}" = config.project.name;};
+    cabalPackages = {"${config.project.name}" = "core";};
     latestGhcVersion = "9.10.1";
   };
 

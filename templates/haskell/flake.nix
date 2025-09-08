@@ -148,6 +148,7 @@
           ## since `cabal-plan-bounds` doesn’t work under Nix
           "9.8.1"
           "9.10.1"
+          "9.12.1"
         ];
 
         ## However, provide packages in the default overlay for _every_
@@ -163,11 +164,17 @@
             "9.12.2"
           ];
 
+        ## See
+        ## https://docs.github.com/en/actions/reference/runners/github-hosted-runners#standard-github-hosted-runners-for-public-repositories
+        ## for the current list of available runners.
         githubSystems = [
-          "macos-13" # x86_64-darwin
-          "macos-14" # aarch64-darwin
-          "ubuntu-24.04" # x86_64-linux
-          "windows-2022"
+          "macos-13" #         x86_64-darwin
+          "macos-15" #         aarch64-darwin
+          "ubuntu-24.04" #     x86_64-linux
+          "ubuntu-24.04-arm" # aarch64-linux
+          ## TODO: GHCup doesn’t install on this platform at all.
+          # "windows-11-arm" #   aarch64-windows
+          "windows-2022" #     x86_64-windows
         ];
       };
     }
