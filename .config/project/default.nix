@@ -62,6 +62,7 @@
       ## This is a personal repository.
       formatSettings."*"."Microsoft.FirstPerson" = "NO";
       vocab.${config.project.name}.accept = [
+        "automerge"
         "Dhall"
         "EditorConfig"
         ## Separated because “Editorconfig” and “editorConfig” aren’t valid.
