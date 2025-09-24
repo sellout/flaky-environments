@@ -1,6 +1,7 @@
 # Flaky templates & `devShells`
 
 [![built with garnix](https://img.shields.io/endpoint?url=https%3A%2F%2Fgarnix.io%2Fapi%2Fbadges%2Fsellout%2Fflaky-environments)](https://garnix.io/repo/sellout/flaky-environments)
+[![Nix CI](https://nix-ci.com/badge/gh:sellout:flaky-environments)](https://nix-ci.com/gh:sellout:flaky-environments)
 
 Templates for Sellout’s personal projects.
 
