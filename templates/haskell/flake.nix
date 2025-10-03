@@ -2,11 +2,21 @@
   description = "{{project.summary}}";
 
   nixConfig = {
+    ## NB: This is a consequence both of the prevailing Haskell infrastructure
+    ##     and of using `self.pkgsLib.runEmptyCommand`, which allows us to
+    ##     sandbox derivations that otherwise can’t be. Even once we migrate to
+    ##     non-IFD Haskell infra, this will probably still need to be enabled
+    ##     for the other reason.
+    allow-import-from-derivation = true;
     ## https://github.com/NixOS/rfcs/blob/master/rfcs/0045-deprecate-url-syntax.md
     extra-experimental-features = ["no-url-literals"];
-    extra-substituters = ["https://cache.garnix.io"];
+    extra-substituters = [
+      "https://cache.garnix.io"
+      "https://sellout.cachix.org"
+    ];
     extra-trusted-public-keys = [
       "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
+      "sellout.cachix.org-1:v37cTpWBEycnYxSPAgSQ57Wiqd3wjljni2aC0Xry1DE="
     ];
     ## Isolate the build.
     sandbox = "relaxed";
@@ -148,6 +158,7 @@
           ## since `cabal-plan-bounds` doesn’t work under Nix
           "9.8.1"
           "9.10.1"
+          "9.12.1"
         ];
 
         ## However, provide packages in the default overlay for _every_
@@ -162,13 +173,6 @@
             "9.10.2"
             "9.12.2"
           ];
-
-        githubSystems = [
-          "macos-13" # x86_64-darwin
-          "macos-14" # aarch64-darwin
-          "ubuntu-24.04" # x86_64-linux
-          "windows-2022"
-        ];
       };
     }
     // flake-utils.lib.eachSystem supportedSystems

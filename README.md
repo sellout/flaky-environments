@@ -9,7 +9,7 @@ This also has `devShells` to make it easy to work on projects that don’t have 
 
 Some “template-y” files are instead in a [community health file repository](https://github.com/sellout/.github) that’s shared by all repositories under the “sellout” user. Individual repositories may override these files as necessary, and repositories in a different org won’t benefit from the repository. Some of these files may eventually transition to templates (for example., CONTRIBUTING.md) if it’s deemed important for them to be part of the source tree.
 
-**NB**: This repo disables [Renovate](https://docs.renovatebot.com/)’s automerge functionality, because [Garnix](https://garnix.io/) can’t run the template validation checks. Therefore, `nix flake check` should be manually run on the branch before merging any PR. (**TODO**: add GitHub jobs to run all un-sandboxable Nix derivations, allowing us to re-enable automerge.)
+**NB**: This repository disables [Renovate](https://docs.renovatebot.com/)’s automerge functionality, because [garnix](https://garnix.io/) can’t run the template validation checks. Therefore, `nix flake check` should be manually run on the branch before merging any PR. (**TODO**: add GitHub jobs to run all un-sandboxable Nix derivations, allowing us to re-enable automerge.)
 
 ## usage
 

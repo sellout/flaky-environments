@@ -9,7 +9,7 @@
 
 ## usage
 
-See [the package README](./{{project.name}}/README.md) for usage information.
+See [the package README](./core/README.md) for usage information.
 
 ## building
 
@@ -92,4 +92,4 @@ If you don’t use Nix, you will need to mention that in your PR so that one of 
 
 ## comparisons
 
-See [the package README](./{{project.name}}/README.md) for comparisons with other similar projects.
+See [the package README](./core/README.md) for comparisons with other similar projects.

@@ -8,4 +8,4 @@ program-options
 tests: True
 
 packages:
-  ./{{project.name}}/{{project.name}}.cabal
+  ./core/{{project.name}}.cabal
