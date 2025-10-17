@@ -8,6 +8,8 @@ https://nix-ci.com/badge/gh:sellout:{{project.name}}
 [[https://repology.org/project/emacs:{{project.name}}/versions][https://repology.org/badge/tiny-repos/emacs:{{project.name}}.svg]]
 #+ATTR_HTML: :alt Latest packaged versions
 [[https://repology.org/project/emacs:{{project.name}}/versions][https://repology.org/badge/latest-versions/emacs:{{project.name}}.svg]]
+#+ATTR_HMTL: :alt Project Manager
+[[https://sellout.github.io/project-manager/][https://img.shields.io/badge/%20-Project%20Manager-%235277C3?logo=nixos&labelColor=%23cccccc]]
 
 {{project.summary}}
 
