@@ -58,7 +58,10 @@ in
       pkgs.gnumake
     ];
     emacs-lisp = extendDevShell nix [
-      pkgs.cask
+      ## TODO: This works on aarch64-darwin in unstable and master, but not
+      ##       25.05. I haven’t needed it, so it’s easier to disable until 25.11
+      ##       than to work around.
+      # pkgs.cask
       pkgs.emacs
       pkgs.emacsPackages.eldev
     ];
