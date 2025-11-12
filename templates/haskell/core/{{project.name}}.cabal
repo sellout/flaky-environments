@@ -7,9 +7,14 @@ description: {{project.description}}
 maintainer: Greg Pfeil <greg@technomadic.org>
 author: Greg Pfeil <greg@technomadic.org>
 copyright: 2025 Greg Pfeil
-license: AGPL-3.0-or-later
+-- TODO: Remove the redundant `OR AGPL-3.0-only` once
+--       haskell/hackage-server#1440 is fixed.
+license: AGPL-3.0-only WITH Universal-FOSS-exception-1.0 OR AGPL-3.0-only OR LicenseRef-commercial
 license-files:
   LICENSE
+  LICENSE.AGPL-3.0-only
+  LICENSE.Universal-FOSS-exception-1.0
+  LICENSE.commercial
 category:
 build-type: Custom
 extra-doc-files:
