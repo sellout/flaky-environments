@@ -4,16 +4,14 @@ name: {{project.name}}
 version: 0.0.1.0
 synopsis: {{project.summary}}
 description: {{project.description}}
-author: Greg Pfeil <greg@technomadic.org>
 maintainer: Greg Pfeil <greg@technomadic.org>
+author: Greg Pfeil <greg@technomadic.org>
 copyright: 2025 Greg Pfeil
-homepage: https://github.com/{{project.repo}}#readme
-bug-reports: https://github.com/{{project.repo}}/issues
-category:
-build-type: Custom
 license: AGPL-3.0-or-later
 license-files:
   LICENSE
+category:
+build-type: Custom
 extra-doc-files:
   CHANGELOG.md
   README.md
@@ -36,9 +34,34 @@ tested-with:
     9.12.1
   }
 
+homepage: https://github.com/{{project.repo}}#readme
+bug-reports: https://github.com/{{project.repo}}/issues
 source-repository head
   type: git
-  location: https://github.com/{{project.repo}}
+  location: https://github.com/{{project.repo}}.git
+  subdir: core
+
+flag noisy-deprecations
+  description:
+    Prior to GHC 9.10, the @DEPRECATED@ pragma can’t distinguish between terms
+    and types. Consenquently, you can get spurious warnings when there’s a name
+    collision and the name in the other namespace is deprecated. Or you can
+    choose to not get those warnings, at the risk of not being warned when
+    there’s a name collision and the namespace you’re referencing is the one
+    that’s deprecated.
+  default: True
+  manual: False
+
+custom-setup
+  setup-depends:
+    -- TODO: Due to haskell/cabal#3751, `Cabal` has to be specified even though
+    --       there’s no direct dependency. Its lower bound needs to match
+    --      `cabal-version` at the top of this file, and Hackage requires it to
+    --       have _some_ upper bound. (Since there’s no direct dependency, it
+    --       doesn’t use PVP bounds.)
+    Cabal >= 3.0 && < 99,
+    base,
+    cabal-doctest ^>= {1.0.0},
 
 -- This mimics the GHC2024 extension
 -- (https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/control.html?highlight=doandifthenelse#extension-GHC2024),
@@ -90,19 +113,10 @@ common GHC2024
     TypeOperators
     UnicodeSyntax
 
-flag noisy-deprecations
-  description:
-    Prior to GHC 9.10, the `DEPRECATED` pragma can’t distinguish between terms
-    and types. Consenquently, you can get spurious warnings when there’s a name
-    collision and the name in the other namespace is deprecated. Or you can
-    choose to not get those warnings, at the risk of not being warned when
-    there’s a name collision and the namespace you’re referencing is the one
-    that’s deprecated.
-
 common defaults
   import: GHC2024
   build-depends:
-    base >= 4.8.2,
+    base,
   ghc-options:
   if impl(ghc >= 8.0.1)
     ghc-options:
@@ -162,13 +176,6 @@ common defaults
   if flag(noisy-deprecations)
     cpp-options: -DSELLOUT_NOISY_DEPRECATIONS
 
-custom-setup
-  setup-depends:
-    -- TODO: Remove `Cabal` dep once haskell/cabal#3751 is fixed.
-    Cabal ^>= {3.0.0, 3.2.0, 3.4.0, 3.6.0, 3.8.0, 3.10.0, 3.12.0, 3.14.0, 3.16.0},
-    base >= 4.8.2,
-    cabal-doctest ^>= {1.0.0},
-
 library
   import: defaults
   hs-source-dirs: src
@@ -181,7 +188,7 @@ test-suite doctests
   hs-source-dirs: tests
   main-is: doctests.hs
   build-depends:
-    doctest >= 0.16.0,
+    doctest,
     {{project.name}},
   if impl(ghc >= 8.10.1)
     ghc-options:
