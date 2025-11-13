@@ -10,6 +10,17 @@
   project = {
     name = "{{project.name}}";
     summary = "{{project.summary}}";
+    ## TODO: Move something like this to Flaky.
+    file = let
+      copyLicenses = dir: {
+        "${dir}/LICENSE".source = ../../LICENSE;
+        "${dir}/LICENSE.AGPL-3.0-only".source = ../../LICENSE.AGPL-3.0-only;
+        "${dir}/LICENSE.Universal-FOSS-exception-1.0".source =
+          ../../LICENSE.Universal-FOSS-exception-1.0;
+        "${dir}/LICENSE.commercial".source = ../../LICENSE.commercial;
+      };
+    in
+      copyLicenses "core";
   };
 
   imports = [./hlint.nix];
