@@ -1,35 +1,11 @@
-{
-  config,
-  flaky,
-  lib,
-  supportedSystems,
-  ...
-}: {
+### All available options for this file are listed in
+### https://sellout.github.io/project-manager/options.xhtml
+{...}: {
   project = {
     name = "{{project.name}}";
     summary = "{{project.summary}}";
   };
 
-  ## dependency management
-  services.renovate.enable = true;
-
-  ## development
-  programs = {
-    direnv.enable = true;
-    git.enable = true;
-  };
-
-  ## formatting
-  editorconfig.enable = true;
-  programs = {
-    treefmt.enable = true;
-    vale.enable = true;
-  };
-
-  ## CI
-  services.garnix.enable = true;
-
   ## publishing
-  services.flakehub.enable = true;
-  services.github.enable = true;
+  services.github.settings.repository.topics = [];
 }
