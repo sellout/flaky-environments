@@ -131,6 +131,7 @@ in
         "9.8.1"
         "9.10.1"
         "9.12.1"
+        "9.14.1"
       ];
 
       ## However, provide packages in the default overlay for _every_
