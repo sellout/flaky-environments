@@ -57,13 +57,9 @@ in
       pkgs.gcc
       pkgs.gnumake
     ];
-    emacs-lisp = extendDevShell nix [
-      ## TODO: This works on aarch64-darwin in unstable and master, but not
-      ##       25.05. I haven’t needed it, so it’s easier to disable until 25.11
-      ##       than to work around.
-      # pkgs.cask
-      pkgs.emacs
-      pkgs.emacsPackages.eldev
+    dhall = extendDevShell nix [
+      pkgs.dhall
+      pkgs.dhall-docs
     ];
     haskell = extendDevShell nix ([
         pkgs.cabal-install
@@ -88,24 +84,29 @@ in
         ++ [
           pkgs.cargo
           pkgs.cargo-fuzz
-          pkgs.cargo-semver-checks
+          (pkgs.cargo-semver-checks.overrideAttrs (old: {
+            ## NB: Checks fail on aarch64 systems with Nixpkgs 25.11.
+            doCheck = !pkgs.stdenv.isAarch64;
+          }))
           pkgs.rust-analyzer
           pkgs.rustPackages.clippy
           pkgs.rustc
           pkgs.rustfmt
           (pkgs.rustup.overrideAttrs (old: {
-            ## NB: Fails on i686-linux with Nixpkgs 24.11.
-            doCheck = pkgs.system != "i686-linux";
+            ## NB: Checks fail on aarch64-darwin with Nixpkgs 25.11.
+            doCheck = pkgs.system != "aarch64-darwin";
           }))
         ]);
   }
   // (
     if pkgs.system != sys.i686-linux
     then {
-      ## `cborg-0.2.9.0` fails to build on i686-linux
-      dhall = extendDevShell nix [
-        pkgs.dhall
-        pkgs.dhall-docs
+      ## guile is broken on i686-linux in Nixpkgs 25.11
+      emacs-lisp = extendDevShell nix [
+        ## TODO: Doesn’t build on Nixpkgs 25.11
+        # pkgs.cask
+        pkgs.emacs
+        pkgs.emacsPackages.eldev
       ];
       ## `openjdk-19.0.2+7` isn’t supported on i686-linux
       scala = extendDevShell nix [pkgs.sbt];
