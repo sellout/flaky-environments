@@ -55,21 +55,20 @@ in
     # - NixOS/nixpkgs#26561
     # - https://discourse.nixos.org/t/nix-haskell-development-2020/6170
     overlays = {
-      default = final: prev:
-        flaky-haskell.lib.overlayHaskellPackages
-        (map self.lib.nixifyGhcVersion
-          (self.lib.supportedGhcVersions final.system))
-        (final: prev:
-          nixpkgs.lib.composeManyExtensions [
-            ## TODO: I think this overlay is only needed by formatters,
-            ##       devShells, etc., so it shouldn’t be included in the
-            ##       standard overlay.
-            (flaky.overlays.haskellDependencies final prev)
-            (self.overlays.haskell final prev)
-            (self.overlays.haskellDependencies final prev)
-          ])
-        final
-        prev;
+      default = final:
+        nixpkgs.lib.composeManyExtensions [
+          flaky.overlays.default
+          (flaky-haskell.lib.overlayHaskellPackages
+            (map self.lib.nixifyGhcVersion
+              (self.lib.supportedGhcVersions final.system))
+            (final: prev:
+              nixpkgs.lib.composeManyExtensions [
+                (flaky.overlays.haskellDependencies final prev)
+                (self.overlays.haskell final prev)
+                (self.overlays.haskellDependencies final prev)
+              ]))
+        ]
+        final;
 
       haskell = flaky-haskell.lib.haskellOverlay cabalPackages;
 
@@ -142,7 +141,6 @@ in
   // flake-utils.lib.eachSystem supportedSystems
   (system: let
     pkgs = nixpkgs.legacyPackages.${system}.appendOverlays [
-      flaky.overlays.default
       ## NB: This uses `self.overlays.default` because packages need to be
       ##     able to find other packages in this flake as dependencies.
       self.overlays.default

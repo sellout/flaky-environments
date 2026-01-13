@@ -1,5 +1,6 @@
 # {{project.name}}
 
+[![Hackage Version](https://img.shields.io/hackage/v/{{project.name}})](https://hackage.haskell.org/package/{{project-name}})
 [![Packaging status](https://repology.org/badge/tiny-repos/haskell:{{project.name}}.svg)](https://repology.org/project/haskell:{{project.name}}/versions)
 [![latest packaged versions](https://repology.org/badge/latest-versions/haskell:{{project.name}}.svg)](https://repology.org/project/haskell:{{project.name}}/versions)
 

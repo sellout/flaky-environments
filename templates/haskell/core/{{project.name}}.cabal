@@ -1,4 +1,6 @@
 cabal-version: 3.0
+-- ^ Cabal 3.0 is the first with the `Universal-FOSS-exception-1.0` SPDX license
+--   exception.
 
 name: {{project.name}}
 version: 0.0.1.0
@@ -47,6 +49,22 @@ source-repository head
   location: https://github.com/{{project.repo}}.git
   subdir: core
 
+custom-setup
+  setup-depends:
+    -- TODO: Due to haskell/cabal#3751, `Cabal` has to be specified even though
+    --       there’s no direct dependency. Its lower bound needs to be at least
+    --       as high as `cabal-version` at the top of this file, and Hackage
+    --       requires it to have _some_ upper bound. (Since there’s no direct
+    --       dependency, it doesn’t use PVP bounds.)
+    --
+    -- TODO: Due to haskell/cabal#9375, 3.10.3 is required in order to load
+    --       plugins from a `ghc-options` field. Unfortunately, GHCs prior to
+    --       9.8.3 include an older Cabal, so a newer one may need to be
+    --       manually installed.
+    Cabal >= 3.10.3 && < 99,
+    base ^>= {4.8.2, 4.9.0, 4.10.0, 4.11.0, 4.12.0, 4.13.0, 4.14.0, 4.15.0, 4.16.0, 4.17.0, 4.18.0, 4.19.0, 4.20.0, 4.21.0},
+    cabal-doctest ^>= {1.0.0},
+
 flag noisy-deprecations
   description:
     Prior to GHC 9.10, the @DEPRECATED@ pragma can’t distinguish between terms
@@ -56,18 +74,16 @@ flag noisy-deprecations
     there’s a name collision and the namespace you’re referencing is the one
     that’s deprecated.
   default: True
-  manual: False
+  -- Because disabling this flag won’t help the solver.
+  manual: True
 
-custom-setup
-  setup-depends:
-    -- TODO: Due to haskell/cabal#3751, `Cabal` has to be specified even though
-    --       there’s no direct dependency. Its lower bound needs to match
-    --      `cabal-version` at the top of this file, and Hackage requires it to
-    --       have _some_ upper bound. (Since there’s no direct dependency, it
-    --       doesn’t use PVP bounds.)
-    Cabal >= 3.0 && < 99,
-    base ^>= {4.8.2, 4.9.0, 4.10.0, 4.11.0, 4.12.0, 4.13.0, 4.14.0, 4.15.0, 4.16.0, 4.17.0, 4.18.0, 4.19.0, 4.20.0, 4.21.0},
-    cabal-doctest ^>= {1.0.0},
+flag verify-no-recursion
+  description:
+    Compile with "NoRecursion" enabled. This is intended for developers of this
+    package.
+  default: False
+  -- Because disabling this flag won’t help the solver.
+  manual: True
 
 -- This mimics the GHC2024 extension
 -- (https://ghc.gitlab.haskell.org/ghc/doc/users_guide/exts/control.html?highlight=doandifthenelse#extension-GHC2024),
@@ -180,18 +196,26 @@ common defaults
     default-extensions:
       StrictData
   if flag(noisy-deprecations)
-    cpp-options: -DSELLOUT_NOISY_DEPRECATIONS
+    cpp-options:
+      -DSELLOUT_NOISY_DEPRECATIONS
+  if flag(verify-no-recursion)
+    build-depends:
+      no-recursion,
+    ghc-options:
+      -fplugin=NoRecursion
 
 library
   import: defaults
-  hs-source-dirs: src
+  hs-source-dirs:
+    src
   build-depends:
   exposed-modules:
 
 test-suite doctests
   import: defaults
   type: exitcode-stdio-1.0
-  hs-source-dirs: tests
+  hs-source-dirs:
+    tests
   main-is: doctests.hs
   build-depends:
     doctest,
