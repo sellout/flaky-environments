@@ -170,9 +170,9 @@ in
       cabalPackages
       (hpkgs:
         [self.projectConfigurations.${system}.packages.path]
-        ## NB: Haskell Language Server no longer supports GHC <9.4.
+        ## NB: Haskell Language Server no longer supports GHC <9.6.
         ++ nixpkgs.lib.optional
-        (nixpkgs.lib.versionAtLeast hpkgs.ghc.version "9.4")
+        (nixpkgs.lib.versionAtLeast hpkgs.ghc.version "9.6")
         hpkgs.haskell-language-server);
 
     projectConfigurations =
