@@ -43,7 +43,7 @@ in
 
     ## TODO: This _should_ be done with an overlay, but I can’t seem to avoid
     ##       getting infinite recursion with it.
-    stdenv = pkgs.llvmPackages_16.stdenv;
+    stdenv = pkgs.llvmPackages.stdenv;
   in {
     packages = {
       default = self.packages.${system}.${pname};
@@ -78,7 +78,7 @@ in
           pkgs.checks.simple
           "clang-tidy"
           src
-          [pkgs.llvmPackages_16.clang]
+          [pkgs.llvmPackages.clang]
           ''
             ## TODO: Can we keep the compile-commands.json from the original
             ##       build? E.g., send it to a separate output, which we
