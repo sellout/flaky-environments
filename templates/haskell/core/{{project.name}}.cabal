@@ -65,7 +65,7 @@ custom-setup
     --       have _some_ upper bound. (Since there’s no direct dependency, it
     --       doesn’t use PVP bounds.)
     Cabal >= 3.0 && < 99,
-    base,
+    base ^>= {4.8.2, 4.9.0, 4.10.0, 4.11.0, 4.12.0, 4.13.0, 4.14.0, 4.15.0, 4.16.0, 4.17.0, 4.18.0, 4.19.0, 4.20.0, 4.21.0},
     cabal-doctest ^>= {1.0.0},
 
 -- This mimics the GHC2024 extension
@@ -121,7 +121,7 @@ common GHC2024
 common defaults
   import: GHC2024
   build-depends:
-    base,
+    base ^>= {4.8.2, 4.9.0, 4.10.0, 4.11.0, 4.12.0, 4.13.0, 4.14.0, 4.15.0, 4.16.0, 4.17.0, 4.18.0, 4.19.0, 4.20.0, 4.21.0},
   ghc-options:
   if impl(ghc >= 8.0.1)
     ghc-options:
