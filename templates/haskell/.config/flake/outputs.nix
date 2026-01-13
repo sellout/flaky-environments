@@ -96,7 +96,7 @@ in
         "ghc" + nixpkgs.lib.replaceStrings ["."] [""] version;
 
       ## TODO: Extract this automatically from `pkgs.haskellPackages`.
-      defaultGhcVersion = "9.8.4";
+      defaultGhcVersion = "9.10.3";
 
       ## Test the oldest revision possible for each minor release. If it’s not
       ## available in nixpkgs, test the oldest available, then try an older
@@ -105,14 +105,11 @@ in
       ## maps to in the nixpkgs we depend on.
       testedGhcVersions = system: [
         self.lib.defaultGhcVersion
-        "8.10.7"
-        "9.0.2"
-        "9.2.8"
-        "9.4.7"
-        "9.6.3"
-        "9.8.1"
-        "9.10.1"
-        "9.12.1"
+        "9.4.8"
+        "9.6.7"
+        "9.8.4"
+        "9.10.2"
+        "9.12.2"
         # "ghcHEAD" # doctest doesn’t work on current HEAD
       ];
 
@@ -138,16 +135,7 @@ in
 
       ## However, provide packages in the default overlay for _every_
       ## supported version.
-      supportedGhcVersions = system:
-        self.lib.testedGhcVersions system
-        ++ [
-          "9.4.8"
-          "9.6.4"
-          "9.6.5"
-          "9.8.2"
-          "9.10.2"
-          "9.12.2"
-        ];
+      supportedGhcVersions = self.lib.testedGhcVersions;
     };
   }
   // flake-utils.lib.eachSystem supportedSystems
