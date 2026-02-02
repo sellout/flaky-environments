@@ -102,15 +102,17 @@ in
       ## one via GitHub workflow. Additionally, check any revisions that have
       ## explicit conditionalization. And check whatever version `pkgs.ghc`
       ## maps to in the nixpkgs we depend on.
-      testedGhcVersions = system: [
-        self.lib.defaultGhcVersion
-        "9.4.8"
-        "9.6.7"
-        "9.8.4"
-        "9.10.2"
-        "9.12.2"
-        # "ghcHEAD" # doctest doesn’t work on current HEAD
-      ];
+      testedGhcVersions = system:
+        [
+          self.lib.defaultGhcVersion
+          "9.4.8"
+          "9.6.7"
+          "9.8.4"
+          "9.10.2"
+        ]
+        ++ nixpkgs.lib.optionals (system != "i686-linux") [
+          "9.12.2" # GHC fails to build on i686-linux
+        ];
 
       ## The versions that are older than those supported by Nix that we
       ## prefer to test against.
@@ -170,7 +172,12 @@ in
         [self.projectConfigurations.${system}.packages.path]
         ## NB: Haskell Language Server no longer supports GHC <9.6.
         ++ nixpkgs.lib.optional
-        (nixpkgs.lib.versionAtLeast hpkgs.ghc.version "9.6")
+        (nixpkgs.lib.versionAtLeast hpkgs.ghc.version "9.6"
+          ## TODO: With Nixpkgs 25.11, HLS complains about conflicting package
+          ##       versions in these combinations, so skip it.
+          && !(pkgs.stdenv.hostPlatform.isLinux
+            && nixpkgs.lib.versionAtLeast hpkgs.ghc.version "9.8"
+            && nixpkgs.lib.versionOlder hpkgs.ghc.version "9.10"))
         hpkgs.haskell-language-server);
 
     projectConfigurations =
