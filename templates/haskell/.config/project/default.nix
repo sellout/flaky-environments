@@ -35,16 +35,39 @@
         "check-licenses"
       ]
       ++ lib.concatMap (sys:
-        lib.concatMap (ghc: [
-          "build (${ghc}, ${sys})"
-          "build (--prefer-oldest, ${ghc}, ${sys})"
-        ])
+        lib.concatMap (ghc:
+          ## Don’t add `exclude`d matrix entries to the required list
+          ##
+          ## TODO: Make this less manual (like the `include` component).
+            if
+              ## GHC before 8.4 needs an older Ubuntu
+              lib.versionOlder ghc "8.4"
+              && sys == "ubuntu-24.04"
+              ## GHC doesn’t support ARM before GHC 9.2.
+              || lib.versionOlder ghc "9.2"
+              && builtins.elem sys ["macos-15" "ubuntu-24.04-arm"]
+              ## GHC 9.2.1 relied on libnuma at runtime for aarch64
+              || ghc == "9.2.1" && sys == "ubuntu-24.04-arm"
+            then []
+            else [
+              "build (${ghc}, ${sys})"
+              "build (--prefer-oldest, ${ghc}, ${sys})"
+            ])
         self.lib.nonNixTestedGhcVersions)
-      config.services.haskell-ci.systems);
+      config.services.haskell-ci.systems
+      ## Add `include`d matrix entries to the required list.
+      ++ map (
+        entry:
+          if entry.bounds == ""
+          then "build (${entry.ghc}, ${entry.os})"
+          else "build (${entry.bounds}, ${entry.ghc}, ${entry.os})"
+      )
+      config.services.haskell-ci.include);
   services.haskell-ci = {
     inherit (self.lib) defaultGhcVersion;
     ghcVersions = self.lib.nonNixTestedGhcVersions;
     cabalPackages = {"${config.project.name}" = "core";};
+    ## The latest Stackage LTS that we also build on GitHub for.
     latestGhcVersion = "9.10.1";
   };
 

@@ -44,10 +44,18 @@ tested-with:
 
 homepage: https://github.com/{{project.repo}}#readme
 bug-reports: https://github.com/{{project.repo}}/issues
+
 source-repository head
   type: git
   location: https://github.com/{{project.repo}}.git
   subdir: core
+
+source-repository this
+  type: git
+  location: https://github.com/{{project.repo}}.git
+  subdir: core
+  -- NB: This is the repo version, which is distinct from the package version.
+  tag: v0.1.0
 
 custom-setup
   setup-depends:
@@ -139,7 +147,11 @@ common defaults
   import: GHC2024
   build-depends:
     base ^>= {4.8.2, 4.9.0, 4.10.0, 4.11.0, 4.12.0, 4.13.0, 4.14.0, 4.15.0, 4.16.0, 4.17.0, 4.18.0, 4.19.0, 4.20.0, 4.21.0},
+    ghc-compat-plugin ^>= {0.1.0},
   ghc-options:
+    -fplugin GhcCompat
+    -fplugin-opt GhcCompat:minVersion=7.10.3
+    -fplugin-opt GhcCompat:reportIncompatibleExtensions=error
   if impl(ghc >= 8.0.1)
     ghc-options:
       -Weverything
@@ -157,20 +169,14 @@ common defaults
   else
     ghc-options:
       -Wall
-  -- remove if the oldest supported version is GHC 8.10.1+
-  if impl(ghc >= 8.10.1)
+  if impl(ghc >= 8.6.1)
     ghc-options:
-      -Wno-prepositive-qualified-module
-  -- remove if the oldest supported version is GHC 9.2.1+
-  if impl(ghc >= 9.2.1)
+      -- remove if oldest supported version is GHC 8.6.1
+      -Wno-star-is-type
+  if impl(ghc >= 8.8.1)
     ghc-options:
-      -Wno-missing-kind-signatures
-  if impl(ghc >= 9.8.1)
-    ghc-options:
-      -- remove if the oldest supported version is GHC 9.2.1+
-      -Wno-missing-poly-kind-signatures
-      -- Inference good.
-      -Wno-missing-role-annotations
+      -- remove if oldest supported version is GHC 8.2.1
+      -Wno-missing-deriving-strategies
   default-extensions:
     -- BlockArguments - uncomment if the oldest supported version is GHC 8.6.1+
     DefaultSignatures
