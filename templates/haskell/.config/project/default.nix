@@ -16,7 +16,7 @@
         "${dir}/LICENSE.AGPL-3.0-only".source = ../../LICENSE.AGPL-3.0-only;
         "${dir}/LICENSE.Universal-FOSS-exception-1.0".source =
           ../../LICENSE.Universal-FOSS-exception-1.0;
-        "${dir}/LICENSE.commercial".source = ../../LICENSE.commercial;
+        "${dir}/LICENSE.proprietary".source = ../../LICENSE.proprietary;
       };
     in
       copyLicenses "core";
