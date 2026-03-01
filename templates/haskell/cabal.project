@@ -5,6 +5,11 @@ max-backjumps: -1
 minimize-conflict-set: true
 reorder-goals: true
 
+-- Maximize parallelism
+jobs: $ncpus
+if impl(ghc >= 9.8)
+  semaphore: True
+
 flags:
   -- Ensure development of this project always uses @NoRecursion@, even if it
   -- causes the solver to fail.
