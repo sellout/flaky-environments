@@ -5,7 +5,8 @@ cabal-version: 3.0
 name: {{project.name}}
 version: 0.0.1.0
 synopsis: {{project.summary}}
-description: {{project.description}}
+description:
+  {{project.description}}
 maintainer: Greg Pfeil <greg@technomadic.org>
 author: Greg Pfeil <greg@technomadic.org>
 copyright: 2025 Greg Pfeil
