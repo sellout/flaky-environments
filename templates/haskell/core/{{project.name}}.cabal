@@ -238,6 +238,10 @@ test-suite doctests
       -- to ensure it gets built before this test-suite, even though the package
       -- appears to be unused.
       -Wno-unused-packages
+  -- NB: Adjust this to contain any components that may have doctests (including
+  --     executables).
+  x-doctest-components:
+    lib
   -- TODO: The sections below here are necessary because we don’t have control
   --       over the generated `Build_doctests.hs` file. So we have to silence
   --       all of its warnings one way or another.
