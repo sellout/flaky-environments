@@ -9,7 +9,7 @@ description:
   {{project.description}}
 maintainer: Greg Pfeil <greg@technomadic.org>
 author: Greg Pfeil <greg@technomadic.org>
-copyright: 2025 Greg Pfeil
+copyright: 2026 Greg Pfeil
 license: AGPL-3.0-only WITH Universal-FOSS-exception-1.0 OR LicenseRef-proprietary
 license-files:
   LICENSE
