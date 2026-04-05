@@ -78,6 +78,9 @@ in
         )
         pkgs.hpack
         pkgs.ormolu
+        ## This is just so commonly needed by Haskell projects.
+        pkgs.zlib
+        pkgs.zlib.dev
       ]
       ++ lib.optionals (pkgs.system != sys.i686-linux) [
         ## TODO: `enummapset-0.7.1.0` fails to build on i686-linux.
