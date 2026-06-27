@@ -10,5 +10,6 @@
   project.file.".dir-locals.el".source = ../emacs/.dir-locals.el;
 
   ## publishing
+  services.github.settings.repository.private = false;
   services.github.settings.repository.topics = [];
 }
