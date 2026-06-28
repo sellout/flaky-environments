@@ -67,6 +67,7 @@
   };
 
   ## publishing
+  services.github.settings.repository.private = false;
   services.github.settings.repository.topics = [
     "development"
     "nix-flakes"
