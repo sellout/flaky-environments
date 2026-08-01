@@ -39,7 +39,7 @@
       ]
       ## NB: bash-language-server fails on i686-linux with Nixpkgs 24.11.
       ++ lib.optional (pkgs.system != "i686-linux")
-      pkgs.nodePackages.bash-language-server;
+      pkgs.bash-language-server;
   });
 in
   {
@@ -84,18 +84,12 @@ in
         ++ [
           pkgs.cargo
           pkgs.cargo-fuzz
-          (pkgs.cargo-semver-checks.overrideAttrs (old: {
-            ## NB: Checks fail on aarch64 systems with Nixpkgs 25.11.
-            doCheck = !pkgs.stdenv.isAarch64;
-          }))
+          pkgs.cargo-semver-checks
           pkgs.rust-analyzer
           pkgs.rustPackages.clippy
           pkgs.rustc
           pkgs.rustfmt
-          (pkgs.rustup.overrideAttrs (old: {
-            ## NB: Checks fail on aarch64-darwin with Nixpkgs 25.11.
-            doCheck = pkgs.system != "aarch64-darwin";
-          }))
+          pkgs.rustup
         ]);
   }
   // (
