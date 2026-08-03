@@ -108,10 +108,9 @@ in
           "9.4.8"
           "9.6.7"
           "9.8.4"
-          "9.10.2"
         ]
         ++ nixpkgs.lib.optionals (system != "i686-linux") [
-          "9.12.2" # GHC fails to build on i686-linux
+          "9.12.3" # GHC fails to build on i686-linux
         ];
 
       ## The versions that are older than those supported by Nix that we
