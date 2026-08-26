@@ -67,8 +67,20 @@ in
         # handle the dependencies. Stack bundles GHC, but Cabal needs a
         # version installed.
         pkgs.ghc
+        ## Yikes – no wonder this is marked broken – it needs jailbreaking and
+        ## to have checks skipped.
+        (
+          pkgs.haskell.lib.doJailbreak
+          (pkgs.haskellPackages.hpack-dhall.overrideAttrs (old: {
+            doCheck = false;
+            meta.broken = false;
+          }))
+        )
         pkgs.hpack
         pkgs.ormolu
+        ## This is just so commonly needed by Haskell projects.
+        pkgs.zlib
+        pkgs.zlib.dev
       ]
       ++ lib.optionals (pkgs.system != sys.i686-linux) [
         ## TODO: `enummapset-0.7.1.0` fails to build on i686-linux.
