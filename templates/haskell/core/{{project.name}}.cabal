@@ -208,7 +208,7 @@ common defaults
       no-recursion,
     ghc-options:
       -fplugin=NoRecursion
-    if impl(ghc >= 9.4)
+    if impl(ghc >= 9.4.5)
       build-depends:
         henforcer ^>= {1.0.0},
       ghc-options:
@@ -228,7 +228,7 @@ test-suite doctests
     tests
   main-is: doctests.hs
   build-depends:
-    doctest,
+    doctest ^>= {0.16.3, 0.18.1, 0.20.1, 0.21.1, 0.22.2, 0.24.2, 0.25.0},
     {{project.name}},
   ghc-options:
     -fno-warn-missing-import-lists
