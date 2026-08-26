@@ -1,0 +1,4 @@
+Don’t commit this file in your Haskell repository. It exists solely to make the
+flaky-environments template validation check pass.
+
+Remove this file from flaky-environments when sellout/flaky#183 is fixed.
