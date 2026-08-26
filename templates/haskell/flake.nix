@@ -8,12 +8,14 @@
     ##     non-IFD Haskell infra, this will probably still need to be enabled
     ##     for the other reason.
     allow-import-from-derivation = true;
-    ## https://github.com/NixOS/rfcs/blob/master/rfcs/0045-deprecate-url-syntax.md
-    extra-experimental-features = ["no-url-literals"];
     extra-substituters = ["https://sellout.cachix.org"];
     extra-trusted-public-keys = [
       "sellout.cachix.org-1:v37cTpWBEycnYxSPAgSQ57Wiqd3wjljni2aC0Xry1DE="
     ];
+    ## WAIT: This should be `"fatal"`, but NixOS/nixpkgs#544986.
+    lint-absolute-path-literals = "warn";
+    lint-short-path-literals = "fatal";
+    lint-url-literals = "fatal";
     ## Isolate the build.
     sandbox = "relaxed";
     use-registries = false;
