@@ -5,11 +5,11 @@
 
 Templates for Sellout’s personal projects.
 
-This also has `devShells` to make it easy to work on projects that don’t have a flake.
+This also has `devShells` to make it easier to work on projects that don’t have a flake.
 
 Some “template-y” files are instead in a [community health file repository](https://github.com/sellout/.github) that’s shared by all repositories under the “sellout” user. Individual repositories may override these files as necessary, and repositories in a different org won’t benefit from the repository. Some of these files may eventually transition to templates (for example., CONTRIBUTING.md) if it’s deemed important for them to be part of the source tree.
 
-**NB**: This repository disables [Renovate](https://docs.renovatebot.com/)’s automerge functionality, because [garnix](https://garnix.io/) can’t run the template validation checks. Therefore, `nix flake check` should be manually run on the branch before merging any PR. (**TODO**: add GitHub jobs to run all un-sandboxable Nix derivations, allowing us to re-enable automerge.)
+**NB**: This repository disables [Renovate](https://docs.renovatebot.com/)’s automerge functionality, because the template validation checks can’t currently be run in CI. Therefore, `nix flake check` should be manually run on the branch before merging any PR.
 
 ## usage
 
@@ -74,12 +74,12 @@ If you use [direnv](https://direnv.net/), adding `nix develop flaky#<project-typ
 
 ## development environment
 
-We recommend the following steps to make working in this repository as easy as possible.
+We recommend the following steps to make working in this repository easier.
 
 ### `direnv allow`
 
-This command ensures that any work you do within this repository happens within a consistent reproducible environment. That environment provides various debugging tools, etc. When you leave this directory, you will leave that environment behind, so it doesn’t impact anything else on your system.
+This command ensures that any work you do within this repository happens within a consistent reproducible environment. That environment provides various debugging tools, etc. When you leave this directory, you leave that environment behind, so it doesn’t impact anything else on your system.
 
 ### `git config --local include.path ../.config/git/config`
 
-This will apply our repository-specific Git configuration to `git` commands run against this repository. It’s lightweight (you should definitely look at it before applying this command) – it does things like telling `git blame` to ignore formatting-only commits.
+This applies our repository-specific Git configuration to `git` commands run against this repository. It’s lightweight (you should definitely look at it before applying this command) – it does things like telling `git blame` to ignore formatting-only commits.
