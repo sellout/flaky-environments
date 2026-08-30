@@ -17,15 +17,15 @@ https://nix-ci.com/badge/gh:sellout:{{project.name}}
 
 * development environment
 
-We recommend the following steps to make working in this repository as easy as possible.
+We recommend the following steps to make working in this repository easier.
 
 ** ~direnv allow~
 
-This command ensures that any work you do within this repository happens within a consistent reproducible environment. That environment provides various debugging tools, etc. When you leave this directory, you will leave that environment behind, so it doesn’t impact anything else on your system.
+This command ensures that any work you do within this repository happens within a consistent reproducible environment. That environment provides various debugging tools, etc. When you leave this directory, you leave that environment behind, so it doesn’t impact anything else on your system.
 
 ** ~git config --local include.path ../.cache/git/config~
 
-This will apply our repository-specific Git configuration to ~git~ commands run against this repository. It’s lightweight (you should definitely look at it before applying this command) – it does things like telling ~git blame~ to ignore formatting-only commits.
+This applies our repository-specific Git configuration to ~git~ commands run against this repository. It’s lightweight (you should definitely look at it before applying this command) – it does things like telling ~git blame~ to ignore formatting-only commits.
 
 * building
 
