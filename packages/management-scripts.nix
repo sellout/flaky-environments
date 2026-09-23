@@ -6,6 +6,7 @@
   makeWrapper,
   moreutils,
   mustache-go,
+  rename,
   stdenv,
   yq,
 }:
@@ -59,6 +60,7 @@ checkedDrv (stdenv.mkDerivation {
       bash-strict-mode
       moreutils
       mustache-go
+      rename
       yq
     ]}
     )
