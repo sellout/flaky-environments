@@ -12,8 +12,9 @@
     extra-trusted-public-keys = [
       "sellout.cachix.org-1:v37cTpWBEycnYxSPAgSQ57Wiqd3wjljni2aC0Xry1DE="
     ];
-    ## WAIT: This should be `"fatal"`, but NixOS/nixpkgs#544986.
-    lint-absolute-path-literals = "warn";
+    ## WAIT: This should be `"fatal"`, but NixOS/nixpkgs#544986. Also, cabal2nix
+    ##       uses absolute paths.
+    lint-absolute-path-literals = "ignore";
     lint-short-path-literals = "fatal";
     lint-url-literals = "fatal";
     ## Isolate the build.
