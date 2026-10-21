@@ -71,10 +71,8 @@
   ];
 
   ## CI
-  ## FIXME: Shouldn’t need `mkForce` here (or to duplicate the base contexts).
-  ##        Need to improve module merging.
-  services.github.settings.branches.main.protection.required_status_checks.contexts =
-    lib.mkForce
+  services.github.settings.branches.main.protection.required_status_checks.checks =
+    map (context: {inherit context;})
     ([
         "check-bounds"
         "check-licenses"

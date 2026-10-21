@@ -1,0 +1,14 @@
+direnv
+formatter
+[Nn]ix
+Pfeil
+ShellCheck
+automerge
+Dhall
+EditorConfig
+editorconfig
+Eldev
+envrc
+fmt
+Probot
+shfmt
