@@ -14,7 +14,21 @@
 
     checks = builtins.listToAttrs (map (name: {
         name = "${name}-template-validity";
-        value = pkgs.checks.validate-template name self;
+        value =
+          pkgs.checks.validate-template-with
+          (
+            if name == "haskell"
+            then {
+              ## `cabal check` needs the `hs-source-dirs` to exist
+              setup = ''
+                mkdir core/src
+                touch core/src/IGNORE_ME # need a file to add to Git
+              '';
+            }
+            else {}
+          )
+          name
+          self;
       })
       (builtins.attrNames self.templates));
   };
