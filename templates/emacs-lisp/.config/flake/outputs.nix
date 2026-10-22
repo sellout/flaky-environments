@@ -28,7 +28,7 @@ in
       default = flaky.lib.elisp.overlays.default self.overlays.emacs;
 
       emacs = final: prev: efinal: eprev: {
-        "${pname}" = self.packages.${final.system}.${ename};
+        "${pname}" = self.packages.${final.stdenv.hostPlatform.system}.${ename};
       };
     };
 

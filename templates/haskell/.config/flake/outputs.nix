@@ -60,7 +60,7 @@ in
           flaky.overlays.default
           (flaky-haskell.lib.overlayHaskellPackages
             (map self.lib.nixifyGhcVersion
-              (self.lib.supportedGhcVersions final.system))
+              (self.lib.supportedGhcVersions final.stdenv.hostPlatform.system))
             (final: prev:
               nixpkgs.lib.composeManyExtensions [
                 (flaky.overlays.haskellDependencies final prev)

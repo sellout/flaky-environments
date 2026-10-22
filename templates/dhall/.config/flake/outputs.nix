@@ -34,7 +34,7 @@ in
       };
 
       dhall = final: prev: dfinal: dprev: {
-        ${pname} = self.packages.${final.system}.${pname};
+        ${pname} = self.packages.${final.stdenv.hostPlatform.system}.${pname};
       };
     };
 
