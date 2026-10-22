@@ -38,7 +38,7 @@
         pkgs.shfmt
       ]
       ## NB: bash-language-server fails on i686-linux with Nixpkgs 24.11.
-      ++ lib.optional (pkgs.system != "i686-linux")
+      ++ lib.optional (pkgs.stdenv.hostPlatform.system != "i686-linux")
       pkgs.bash-language-server;
   });
 in
@@ -82,7 +82,7 @@ in
         pkgs.zlib
         pkgs.zlib.dev
       ]
-      ++ lib.optionals (pkgs.system != sys.i686-linux) [
+      ++ lib.optionals (pkgs.stdenv.hostPlatform.system != sys.i686-linux) [
         ## TODO: `enummapset-0.7.1.0` fails to build on i686-linux.
         pkgs.haskell-language-server
         ## TODO: dependencies are missing on i686-linux
@@ -91,7 +91,7 @@ in
     rust =
       extendDevShell nix
       (lib.optional
-        (pkgs.system == sys.aarch64-darwin)
+        (pkgs.stdenv.hostPlatform.system == sys.aarch64-darwin)
         pkgs.libiconv
         ++ [
           pkgs.cargo
@@ -105,7 +105,7 @@ in
         ]);
   }
   // (
-    if pkgs.system != sys.i686-linux
+    if pkgs.stdenv.hostPlatform.system != sys.i686-linux
     then {
       ## guile is broken on i686-linux in Nixpkgs 25.11
       emacs-lisp = extendDevShell nix [
