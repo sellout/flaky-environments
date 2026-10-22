@@ -14,7 +14,7 @@
     lint-short-path-literals = "fatal";
     lint-url-literals = "fatal";
     ## Isolate the build.
-    sandbox = "relaxed";
+    sandbox = true;
     use-registries = false;
   };
 
