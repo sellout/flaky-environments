@@ -4,6 +4,8 @@
   nixpkgs,
   self,
   systems,
+  ## Others (like `flaky-haskell`) are only used via `self.inputs`.
+  ...
 }: let
   sys = flake-utils.lib.system;
 

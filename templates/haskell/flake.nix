@@ -2,11 +2,7 @@
   description = "{{project.summary}}";
 
   nixConfig = {
-    ## NB: This is a consequence both of the prevailing Haskell infrastructure
-    ##     and of using `self.pkgsLib.runEmptyCommand`, which allows us to
-    ##     sandbox derivations that otherwise can’t be. Even once we migrate to
-    ##     non-IFD Haskell infra, this will probably still need to be enabled
-    ##     for the other reason.
+    ## NOTE: This is a consequence of the prevailing Haskell infrastructure.
     allow-import-from-derivation = true;
     extra-substituters = ["https://sellout.cachix.org"];
     extra-trusted-public-keys = [

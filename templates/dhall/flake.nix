@@ -2,9 +2,7 @@
   description = "{{project.summary}}";
 
   nixConfig = {
-    ## NB: This is a consequence of using `self.pkgsLib.runEmptyCommand`, which
-    ##     allows us to sandbox derivations that otherwise can’t be.
-    allow-import-from-derivation = true;
+    allow-import-from-derivation = false;
     extra-substituters = [
       "https://cache.dhall-lang.org"
       "https://dhall.cachix.org"

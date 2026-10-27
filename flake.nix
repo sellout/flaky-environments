@@ -2,9 +2,7 @@
   description = "Templates & shells for dev environments";
 
   nixConfig = {
-    ## NB: This is a consequence of using `self.pkgsLib.runEmptyCommand`, which
-    ##     allows us to sandbox derivations that otherwise can’t be.
-    allow-import-from-derivation = true;
+    allow-import-from-derivation = false;
     extra-substituters = ["https://sellout.cachix.org"];
     extra-trusted-public-keys = [
       "sellout.cachix.org-1:v37cTpWBEycnYxSPAgSQ57Wiqd3wjljni2aC0Xry1DE="
@@ -14,7 +12,9 @@
     lint-short-path-literals = "fatal";
     lint-url-literals = "fatal";
     ## Isolate the build.
-    sandbox = true;
+    ##
+    ## WAIT: Needed by `validate-template`, because NixOS/nix#16708.
+    sandbox = "relaxed";
     use-registries = false;
   };
 
@@ -29,5 +29,11 @@
     flake-utils.follows = "flaky/flake-utils";
     nixpkgs.follows = "flaky/nixpkgs";
     systems.follows = "flaky/systems";
+
+    ## Only for validating the Haskell template.
+    flaky-haskell = {
+      inputs.flaky.follows = "flaky";
+      url = "github:sellout/flaky-haskell";
+    };
   };
 }

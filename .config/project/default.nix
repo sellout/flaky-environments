@@ -19,6 +19,7 @@
           (
             if name == "haskell"
             then {
+              overrideInputs = {inherit (self.inputs) flaky-haskell;};
               ## `cabal check` needs the `hs-source-dirs` to exist
               setup = ''
                 mkdir core/src

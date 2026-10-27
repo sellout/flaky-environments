@@ -75,11 +75,10 @@ in
       // {
         ## TODO: This doesn’t quite work yet.
         c-lint =
-          pkgs.checks.simple
-          "clang-tidy"
-          src
-          [pkgs.llvmPackages.clang]
-          ''
+          pkgs.runStrictCommand "clang-tidy" {
+            inherit src;
+            nativeBuildInputs = [pkgs.llvmPackages.clang];
+          } ''
             ## TODO: Can we keep the compile-commands.json from the original
             ##       build? E.g., send it to a separate output, which we
             ##       depend on from this check. We also want it for clangd in
@@ -87,6 +86,7 @@ in
             make clean && bear -- make
             find "$src" \( -name '*.c' -o -name '*.cpp' -o -name '*.h' \) \
               -exec clang-tidy {} +
+            touch "$out"
           '';
       };
 
