@@ -113,6 +113,7 @@
     ## The latest Stackage LTS that we also build on GitHub for.
     latestGhcVersion = "9.10.1";
   };
+  services.nix-ci.allow-import-from-derivation = lib.mkForce true;
 
   ## publishing
   services.github.settings.repository.private = false;
