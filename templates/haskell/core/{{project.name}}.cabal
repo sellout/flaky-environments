@@ -189,6 +189,7 @@ common defaults
     -- QualifiedDo - uncomment if the oldest supported version is GHC 9.0.1+
     RecursiveDo
     -- RequiredTypeArguments - uncomment if the oldest supported version is GHC 9.10.1+
+    -- StrictData - uncomment if the oldest supported version is GHC 8.0.1+
     -- TemplateHaskellQuotes - uncomment if the oldest supported version is GHC 8.0.1+
     TransformListComp
     NoGeneralizedNewtypeDeriving
@@ -197,9 +198,6 @@ common defaults
     NoPatternGuards
     -- NoStarIsType - uncomment if the oldest supported version is GHC 8.6.1+
     -- NoTypeApplications - uncomment if the oldest supported version is GHC 8.0.1+
-  if impl(ghc >= 8.0.1)
-    default-extensions:
-      StrictData
   if flag(noisy-deprecations)
     cpp-options:
       -DSELLOUT_NOISY_DEPRECATIONS
