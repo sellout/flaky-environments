@@ -19,6 +19,16 @@ program-options
   ghc-options:
     -Werror
 
+if impl(ghc >= 8.0.1)
+  program-options
+    ghc-options:
+      -- We should address the warnings these emit when we can, but they flag a
+      -- lot of things that are outside our control. Even though these don’t
+      -- throw under @-Werror@ it can be confusing to contributors to see them
+      -- labeled as errors alongside actual errors.
+      -Wwarn=all-missed-specialisations
+      -Wwarn=missed-specialisations
+
 tests: True
 
 packages:

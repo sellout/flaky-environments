@@ -154,8 +154,6 @@ common defaults
   if impl(ghc >= 8.0.1)
     ghc-options:
       -Weverything
-      -- This one just reports unfixable things, AFAICT.
-      -Wno-all-missed-specialisations
       -- Type inference good.
       -Wno-missing-local-signatures
       -- Warns even when `Unsafe` is explicit, not inferred. See
@@ -189,6 +187,7 @@ common defaults
     -- QualifiedDo - uncomment if the oldest supported version is GHC 9.0.1+
     RecursiveDo
     -- RequiredTypeArguments - uncomment if the oldest supported version is GHC 9.10.1+
+    -- StrictData - uncomment if the oldest supported version is GHC 8.0.1+
     -- TemplateHaskellQuotes - uncomment if the oldest supported version is GHC 8.0.1+
     TransformListComp
     NoGeneralizedNewtypeDeriving
@@ -197,9 +196,6 @@ common defaults
     NoPatternGuards
     -- NoStarIsType - uncomment if the oldest supported version is GHC 8.6.1+
     -- NoTypeApplications - uncomment if the oldest supported version is GHC 8.0.1+
-  if impl(ghc >= 8.0.1)
-    default-extensions:
-      StrictData
   if flag(noisy-deprecations)
     cpp-options:
       -DSELLOUT_NOISY_DEPRECATIONS
@@ -230,8 +226,6 @@ test-suite doctests
   build-depends:
     doctest ^>= {0.16.3, 0.18.1, 0.20.1, 0.21.1, 0.22.2, 0.24.2, 0.25.0},
     {{project.name}},
-  ghc-options:
-    -fno-warn-missing-import-lists
   if impl(ghc >= 8.10.1)
     ghc-options:
       -- `doctest` requires the package containing the doctests as a dependency
@@ -247,7 +241,11 @@ test-suite doctests
   --       all of its warnings one way or another.
   if impl(ghc >= 8.0.1)
     ghc-options:
+      -Wno-missing-import-lists
       -Wno-safe
+  else
+    ghc-options:
+      -fno-warn-missing-import-lists
   if impl(ghc >= 8.4.1)
     ghc-options:
       -Wno-missing-export-lists
