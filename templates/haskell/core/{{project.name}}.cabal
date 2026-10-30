@@ -228,8 +228,6 @@ test-suite doctests
   build-depends:
     doctest ^>= {0.16.3, 0.18.1, 0.20.1, 0.21.1, 0.22.2, 0.24.2, 0.25.0},
     {{project.name}},
-  ghc-options:
-    -fno-warn-missing-import-lists
   if impl(ghc >= 8.10.1)
     ghc-options:
       -- `doctest` requires the package containing the doctests as a dependency
@@ -245,7 +243,11 @@ test-suite doctests
   --       all of its warnings one way or another.
   if impl(ghc >= 8.0.1)
     ghc-options:
+      -Wno-missing-import-lists
       -Wno-safe
+  else
+    ghc-options:
+      -fno-warn-missing-import-lists
   if impl(ghc >= 8.4.1)
     ghc-options:
       -Wno-missing-export-lists
