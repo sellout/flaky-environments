@@ -32,7 +32,14 @@
     pkgs
     hpkgs
     (old: {
-      configureFlags = old.configureFlags ++ ["--ghc-options=-Werror"];
+      ## These should match `program-options` in ../../cabal.project.
+      configureFlags =
+        old.configureFlags
+        ++ [
+          "--ghc-options=-Werror"
+          "--ghc-options=-Wwarn=all-missed-specialisations"
+          "--ghc-options=-Wwarn=missed-specialisations"
+        ];
     });
 in
   {
