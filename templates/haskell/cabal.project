@@ -26,6 +26,8 @@ if impl(ghc >= 8.0.1)
       -- lot of things that are outside our control. Even though these don’t
       -- throw under @-Werror@ it can be confusing to contributors to see them
       -- labeled as errors alongside actual errors.
+      -Wall-missed-specialisations
+      -Wmissed-specialisations
       -Wwarn=all-missed-specialisations
       -Wwarn=missed-specialisations
 
