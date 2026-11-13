@@ -31,6 +31,12 @@ if impl(ghc >= 8.0.1)
       -Wwarn=all-missed-specialisations
       -Wwarn=missed-specialisations
 
+if impl(ghc == 9.4.1)
+  constraints:
+    -- GHC 9.4.1’s specialiser panics when compiling newer `Cabal-syntax`
+    -- versions, so use the `Cabal` that ships with it.
+    any.Cabal installed,
+
 tests: True
 
 packages:
