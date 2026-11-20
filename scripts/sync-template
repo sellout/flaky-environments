@@ -24,9 +24,19 @@ Usage:
   This script looks for .config/mustache.yaml in the repository root. If found,
   it will apply template substitution, but this will still run without it.
 
+  Each sync prepends the locked flake reference it used to
+  .local/state/sync-template/history. That’s used to minimize conflicts when
+  updating files. Conflicts are left in the files, and the script exits
+  non-zero. If there’s no history, or its latest reference can’t be rendered,
+  template files overwrite local ones.
+
+  When merging, a file the template no longer has is deleted if it’s unchanged
+  from the old template, and otherwise left in place and reported as a
+  conflict.
+
   Caveats:
-  - this doesn’t remove files that have been removed from the template since
-    the last update and
+  - if there’s no base to merge from, this doesn’t remove files that have been
+    removed from the template since the last sync and
   - this applies mustache if the expected .config/mustache.yaml exists in the
     repository, it will also replace the ‘{{project.name}}’ template in file
     names.
@@ -82,21 +92,106 @@ else
   exit 1
 fi
 
-temp_dir="$(mktemp --directory --tmpdir "${project_type}-template.XXXX")"
+history_file="${project_dir}/.local/state/sync-template/history"
 
-(
-  cd "${temp_dir}" \
-    && nix flake init --template "${flake_reference}#${project_type}" \
-    && find . -iname "*{{project.name}}*" -depth \
-      -execdir rename "s/{{project.name}}/${project_name}/g" {} +
-)
+# Renders the template from the flake reference ${1} into the directory ${2}.
+function render() {
+  (
+    cd "${2}" \
+      && nix flake init --template "${1}#${project_type}" \
+      && find . -iname "*{{project.name}}*" -depth \
+        -execdir rename "s/{{project.name}}/${project_name}/g" {} +
+  ) || return 1
 
-if [[ -f ${mustache_file} ]]; then
-  find "${temp_dir}" -type f -exec bash -c \
-    'mustache "${1}" "${0}" | sponge "${0}"' \
-    {} "${mustache_file}" \;
+  if [[ -f ${mustache_file} ]]; then
+    find "${2}" -type f -exec bash -c \
+      'mustache "${1}" "${0}" | sponge "${0}"' \
+      {} "${mustache_file}" \;
+  fi
+}
+
+locked_reference="$(nix flake metadata --json "${flake_reference}" \
+  | yq --raw-output '.url')"
+
+new_dir="$(mktemp --directory --tmpdir "${project_type}-template.XXXX")"
+base_dir="$(mktemp --directory --tmpdir "${project_type}-template-base.XXXX")"
+merged_file="$(mktemp --tmpdir "${project_type}-template-merge.XXXX")"
+trap 'rm -rf "${new_dir:?}" "${base_dir:?}" "${merged_file:?}"' EXIT
+
+render "${locked_reference}" "${new_dir}"
+
+have_base=false
+if [[ -s ${history_file} ]]; then
+  base_reference="$(head -n 1 "${history_file}")"
+  if render "${base_reference}" "${base_dir}"; then
+    have_base=true
+  else
+    echo "Couldn’t render ${base_reference}; overwriting local files instead of merging." >&2
+  fi
 fi
 
-cp -pr "${temp_dir:?}"/* "${project_dir}"
-rm -rf "${temp_dir:?}"/*
-rmdir "${temp_dir:?}"
+conflicts=()
+if [[ ${have_base} == true ]]; then
+  while IFS= read -r -d '' file; do
+    file="${file#./}"
+    target="${project_dir}/${file}"
+    if [[ ! -e ${target} ]]; then
+      mkdir -p "$(dirname "${target}")"
+      cp -p "${new_dir}/${file}" "${target}"
+    elif [[ -f "${base_dir}/${file}" ]] \
+      && cmp --silent "${base_dir}/${file}" "${new_dir}/${file}"; then
+      # The template didn’t change this file, so whatever is local stands.
+      continue
+    else
+      # A file new to the template merges against an empty base, so existing
+      # local content conflicts rather than being overwritten.
+      base_file="${base_dir}/${file}"
+      [[ -f ${base_file} ]] || base_file=/dev/null
+      # `-E` (as RCS’s `merge` uses) doesn’t bracket changes both sides made
+      # identically, which `-m` alone does.
+      status=0
+      diff3 --merge --show-overlap \
+        --label="${project_name}" \
+        --label="${base_reference}" \
+        --label="${locked_reference}" \
+        "${target}" "${base_file}" "${new_dir}/${file}" \
+        > "${merged_file}" \
+        || status=$?
+      # `diff3` exits 1 for conflicts and 2 for trouble, which must not clobber
+      # the local file.
+      if ((status > 1)); then
+        exit 1
+      fi
+      # `cat` rather than `mv` keeps the local file’s mode.
+      cat "${merged_file}" > "${target}"
+      if ((status == 1)); then
+        conflicts+=("${file}")
+      fi
+    fi
+  done < <(cd "${new_dir}" && find . -type f -print0)
+
+  # Files the template dropped since the last sync.
+  while IFS= read -r -d '' file; do
+    file="${file#./}"
+    target="${project_dir}/${file}"
+    if [[ -e "${new_dir}/${file}" || ! -e ${target} ]]; then
+      continue
+    elif cmp --silent "${base_dir}/${file}" "${target}"; then
+      rm "${target}"
+    else
+      conflicts+=("${file} (removed from the template, but changed locally)")
+    fi
+  done < <(cd "${base_dir}" && find . -type f -print0)
+else
+  cp -pr "${new_dir:?}"/* "${project_dir}"
+fi
+
+mkdir -p "$(dirname "${history_file}")"
+touch "${history_file}"
+{ echo "${locked_reference}" && cat "${history_file}"; } | sponge "${history_file}"
+
+if ((${#conflicts[@]} > 0)); then
+  echo "Merge conflicts to resolve:" >&2
+  printf '  %s\n' "${conflicts[@]}" >&2
+  exit 1
+fi
