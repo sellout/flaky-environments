@@ -2,6 +2,7 @@
   bash-strict-mode,
   bats,
   checkedDrv,
+  diffutils,
   lib,
   makeWrapper,
   moreutils,
@@ -58,6 +59,7 @@ checkedDrv (stdenv.mkDerivation {
       wrapProgram $out/bin/sync-template \
         --prefix PATH : ${lib.makeBinPath [
       bash-strict-mode
+      diffutils
       moreutils
       mustache-go
       rename
